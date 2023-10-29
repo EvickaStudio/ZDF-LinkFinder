@@ -23,4 +23,4 @@ python main.py
 ```
 
 ## Lizenz:
-Dieses Projekt steht unter der MIT-Lizenz. Siehe `LICENSE` für weitere Informationen.
+Dieses Projekt steht unter der MIT-Lizenz. Siehe [LICENSE](LICENSE) für weitere Informationen.
