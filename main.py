@@ -2,7 +2,9 @@ import logging
 from api.fetcher import fetch_api_token, fetch_json
 from utils.formatter import format_duration
 from utils.extractor import extract_additional_info, list_quality_options
+from utils.downloader import download
 import re
+import requests
 
 logging.basicConfig(level=logging.INFO)
 
@@ -68,6 +70,8 @@ def log_data(title: str, duration: str, fsk: str, download_name: str, additional
     for quality, uri in quality_options.items():
         logging.info(f"  {quality}: {uri}")
 
+    # download(download_name, f"{title}.mp4") # download file to computer
+
 def main(url: str):
     """Hauptfunktion."""
     if not validate_url(url):
@@ -84,6 +88,7 @@ def main(url: str):
     log_data(*data)
 
 
+
 if __name__ == "__main__":
     # Test url, nicht beachten.
     # main('https://www.zdf.de/dokumentation/zdfinfo-doku/mythos-die-groessten-raetsel-der-geschichte--drachen-100.html')
@@ -91,3 +96,4 @@ if __name__ == "__main__":
     main(url)
 
 # TODO: Clean up main in the other files.
+
