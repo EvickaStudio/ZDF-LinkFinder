@@ -3,7 +3,7 @@
 
 ## Beschreibung:
 
-ZDF-LinkFinder ist ein CLI-Tool zur Extraktion von Download-Links für Videos aus der ZDF-Mediathek. Das Tool gibt die verfügbaren Qualitätsstufen und die dazugehörigen Download-Links aus.
+ZDF-LinkFinder ist ein CLI-Tool zur Extraktion von Download-Links für Videos aus der ZDF-Mediathek. Das Tool gibt die verfügbaren Qualitätsstufen und die dazugehörigen Download-Links aus. Links können auch direkt heruntergeladen werden. Auch kann hiermit die Altersverifikation umgangen werden, da die Links zu akamai gehören und ohne eischränkungen funktionieren.
 
 ## Abhängigkeiten:
 - Python 3.x
