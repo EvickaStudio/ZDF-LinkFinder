@@ -22,5 +22,10 @@ Führen Sie `main.py` aus und geben Sie die URL des gewünschten ZDF-Mediathek F
 python main.py
 ```
 
+## Screenshots:
+
+Beispiel Ausgabe (vps):
+![Screenshot](assets/screenshot.png)
+
 ## Lizenz:
 Dieses Projekt steht unter der MIT-Lizenz. Siehe [LICENSE](LICENSE) für weitere Informationen.
