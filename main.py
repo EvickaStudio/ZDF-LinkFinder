@@ -55,7 +55,7 @@ def main(url: str):
 
     # Further processing and downloading can be done here
     # For example: download(quality_options["high"], quality_options["high"].split("/")[-1]) to download the highest quality video with original filename
-    download(quality_options["high"], quality_options["high"].split("/")[-1])
+    download(quality_options["high"], quality_options["high"].split("/")[-1], num_threads=4)
 
 
 if __name__ == "__main__":
