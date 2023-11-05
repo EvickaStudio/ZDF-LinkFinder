@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.db
+*.mp4
+*.m3u8
+*.webm
 # C extensions
 *.so
 testing/
