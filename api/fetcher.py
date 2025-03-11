@@ -1,7 +1,8 @@
-import requests
-import re
 import logging
-from typing import Union, Dict
+import re
+from typing import Dict, Union
+
+import requests
 
 
 def fetch_api_token(url: str) -> Union[str, None]:

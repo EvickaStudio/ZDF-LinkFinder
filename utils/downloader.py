@@ -1,10 +1,11 @@
-import requests
 import logging
-import sys
-import time
-import threading
-from typing import Optional
 import queue
+import sys
+import threading
+import time
+from typing import Optional
+
+import requests
 
 
 class DownloadThread(threading.Thread):

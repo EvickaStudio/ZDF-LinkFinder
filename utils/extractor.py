@@ -1,4 +1,5 @@
-from typing import Dict, Union, Tuple
+from typing import Dict, Tuple, Union
+
 from api.fetcher import fetch_json
 from utils.url_utils import get_id_from_url
 
