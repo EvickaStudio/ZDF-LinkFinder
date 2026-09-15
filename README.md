@@ -11,7 +11,8 @@ ZDF-LinkFinder ermöglicht den einfachen Download von Videos/ Filmen in verschie
 - Download von "Medien" aus der ZDF Mediathek
 - Schnelle Downloads durch Multi-threading
 - Fortschrittsanzeige mit Geschwindigkeitsanzeige (Progress bar)
-- Unterscheidung zwischen direkt herunterladbaren Formaten (MP4, WebM) und nicht unterstützten Streaming-Formaten (M3U8), da es gerade keine m3u8 Unterstützung gibt.
+- Unterstützung für direkte Formate (MP4, WebM) und adaptive Streaming-Formate (M3U8)
+- Parallele, verbindungsgepoolte Serien- und Episodenerkennung mit begrenzter Anfragenzahl
 
 ## Installation
 
@@ -37,16 +38,25 @@ uv sync
 
 ### Basisnutzung
 
-Video mit Standardqualität (`veryhigh`) herunterladen:
+Film herunterladen. Ohne Qualitätsoption erscheint eine Auswahl; Enter wählt die höchste verfügbare Qualität:
 
 ```bash
-python main.py https://www.zdf.de/serien/the-rookie/neue-wege-112.html
+uv run main.py https://www.zdf.de/filme/bis-es-blutet-movie-100
 ```
+
+Eine Serienseite zeigt zuerst die vorhandenen Staffeln und danach die verfügbaren Episoden. Bei beiden Auswahlen werden einzelne Nummern, Listen, Bereiche und `all` akzeptiert:
+
+```bash
+uv run main.py https://www.zdf.de/serien/inspector-ikmen-tod-in-istanbul-100
+```
+
+Beispiele für gültige Eingaben sind `2`, `1,3`, `1-3` und `all`. Die Episoden werden mit einer Auswahl-ID und ihrer tatsächlichen Kennzeichnung wie `S01E04` angezeigt. ZDF stellt nicht immer jede produzierte Folge einer Staffel zum Abruf bereit; angeboten werden nur aktuell herunterladbare Folgen.
 
 ### Kommandozeilenoptionen
 
 ```
-usage: main.py [-h] [-q QUALITY] [-o OUTPUT] [-t THREADS] [-v] [-f] [-l] [-b] [url]
+usage: main.py [-h] [-q QUALITY] [-o OUTPUT] [-t THREADS] [-v] [-f] [-l] [-b]
+               [--seasons SELECTION] [--episodes SELECTION] [url]
 
 positional arguments:
   url                   URL des ZDF-Videos
@@ -54,15 +64,17 @@ positional arguments:
 options:
   -h, --help            Hilfetext anzeigen
   -q QUALITY, --quality QUALITY
-                        Qualität wählen (Standard: veryhigh)
+                        Qualität wählen, zum Beispiel 1080p50 oder veryhigh
   -o OUTPUT, --output OUTPUT
-                        Dateiname festlegen (Standard: [title]_[quality].mp4)
+                        Dateiname festlegen (Standard: [title]_[quality].[format])
   -t THREADS, --threads THREADS
                         Anzahl paralleler Downloads (Standard: 4)
   -v, --verbose         Ausführliche Ausgabe aktivieren
   -f, --force           Existierende Dateien überschreiben
   -l, --list-qualities  Verfügbare Qualitäten anzeigen, ohne herunterzuladen
-  -b, --best            Beste direkt herunterladbare Qualität automatisch auswählen
+  -b, --best            Höchste verfügbare Qualität ohne Nachfrage auswählen
+  --seasons SELECTION   Staffeln: all, 1, 1-3 oder 1,3
+  --episodes SELECTION  Episoden-IDs nach der Staffelauswahl: all, 1, 1-3 oder 1,3
 ```
 
 ### Beispiele
@@ -70,53 +82,69 @@ options:
 - **Qualitätsoptionen anzeigen:**
 
 ```bash
-python main.py https://www.zdf.de/serien/example-show/episode-123.html --list-qualities
+uv run main.py https://www.zdf.de/filme/bis-es-blutet-movie-100 --list-qualities
 ```
 
 - **Herunterladen in bestimmter Qualität:**
 
 ```bash
-python main.py https://www.zdf.de/serien/example-show/episode-123.html --quality high
+uv run main.py https://www.zdf.de/filme/bis-es-blutet-movie-100 --quality 1080p50
 ```
 
 - **Beste Qualität automatisch wählen:**
 
 ```bash
-python main.py https://www.zdf.de/serien/example-show/episode-123.html --best
+uv run main.py https://www.zdf.de/filme/bis-es-blutet-movie-100 --best
 ```
 
 - **Dateinamen festlegen:**
 
 ```bash
-python main.py https://www.zdf.de/serien/example-show/episode-123.html -o my_video.mp4
+uv run main.py https://www.zdf.de/filme/bis-es-blutet-movie-100 -o my_video.mp4
 ```
 
 - **Download-Geschwindigkeit erhöhen (mehr Threads):**
 
 ```bash
-python main.py https://www.zdf.de/serien/example-show/episode-123.html --threads 8
+uv run main.py https://www.zdf.de/filme/bis-es-blutet-movie-100 --threads 8
 ```
 
 - **Ausführliche Log-Ausgabe:**
 
 ```bash
-python main.py https://www.zdf.de/serien/example-show/episode-123.html -v
+uv run main.py https://www.zdf.de/filme/bis-es-blutet-movie-100 -v
+```
+
+- **Staffeln 1 bis 3 vollständig herunterladen:**
+
+```bash
+uv run main.py https://www.zdf.de/serien/die-toten-vom-bodensee-132 --seasons 1-3 --episodes all --best
+```
+
+- **Bestimmte Einträge aus Staffel 2 auswählen:**
+
+```bash
+uv run main.py https://www.zdf.de/serien/die-toten-vom-bodensee-132 --seasons 2 --episodes 1,3-4
 ```
 
 ## Hinweise
 
 - Vorhandene Dateien werden standardmäßig nicht überschrieben, außer die Option `--force` wird genutzt.
-- Die Option `--best` wählt automatisch die höchste verfügbare Qualität aus, die direkt herunterladbar ist.
-- Streaming-Formate (M3U8) sind nicht zum direkten Download geeignet und werden vom Tool automatisch ignoriert.
+- Die Option `--best` wählt automatisch die höchste verfügbare Qualität aus.
+- Ohne `--quality` oder `--best` zeigt das Tool im Terminal eine Qualitätsauswahl. Die Vorauswahl ermittelt für jedes ausgewählte Video einzeln die höchste verfügbare Auflösung und Bildrate.
+- Eine ausdrücklich gewählte Auflösung wie `720p50` wird auf alle ausgewählten Episoden angewendet. Ist sie bei einer Episode nicht verfügbar, verwendet das Tool dort deren beste verfügbare Qualität.
+- Bei einer Serienseite werden Staffeln und Episoden interaktiv ausgewählt. Ohne interaktive Eingabe wird die neueste Staffel vollständig verarbeitet; `--seasons` und `--episodes` steuern Batch-Aufrufe.
+- `--output` kann bei einer Serie verwendet werden, wenn genau eine Episode ausgewählt wurde. Automatische Dateinamen beginnen mit `SxxExx_`.
+- Adaptive Streaming-Formate (M3U8) werden mit dem durch `imageio-ffmpeg` bereitgestellten FFmpeg verlustfrei in eine MP4-Datei umgepackt.
 
 ## Format-Einschränkungen
 
-Die ZDF Mediathek bietet zwei Videoformate an:
+Die ZDF Mediathek bietet mehrere Videoformate an:
 
 - **Direkt herunterladbare Formate** (MP4, WebM): Diese werden unterstützt.
-- **Streaming-Formate** (M3U8): Adaptive Playlists, nicht unterstützt.
+- **Streaming-Formate** (M3U8): Adaptive Playlists bis zur höchsten angebotenen Auflösung, unterstützt über FFmpeg.
 
-Das Tool informiert automatisch, falls eine nicht unterstützte Qualität gewählt wurde.
+ZDFs ältere Qualitätsnamen entsprechen nicht direkt einer Auflösung: `veryhigh` kann beispielsweise nur 960×540 sein. Die Auflösungsoptionen wie `1080p50` sind eindeutig.
 
 <!-- ## Screenshots -->
 

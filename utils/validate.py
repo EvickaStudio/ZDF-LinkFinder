@@ -1,5 +1,5 @@
 import logging
-import re
+from urllib.parse import urlparse
 
 
 def validate_url(url: str) -> bool:
@@ -12,9 +12,12 @@ def validate_url(url: str) -> bool:
     Returns:
     bool: True if the URL is valid, False otherwise
     """
-    # Fix the regex pattern
-    pattern = r"https://(?:www\.)?zdf\.de/[\w/-]+\.html"
-    is_valid = re.match(pattern, url) is not None
+    parsed = urlparse(url)
+    is_valid = (
+        parsed.scheme == "https"
+        and parsed.hostname in {"zdf.de", "www.zdf.de"}
+        and bool(parsed.path.strip("/"))
+    )
 
     if is_valid:
         logging.info("Valid URL!")
