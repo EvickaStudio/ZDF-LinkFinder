@@ -22,19 +22,15 @@ git clone https://github.com/EvickaStudio/ZDF-LinkFinder.git
 cd ZDF-LinkFinder
 ```
 
-2. Virtual Environment erstellen und aktivieren (optional):
+1. Virtual Environment erstellen, aktivieren und Abhängigkeiten installieren:
 
 ```bash
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
-```
-
-3. Abhängigkeiten installieren:
-
-Dies ist in dem Fall nur `requests`, eine Bibliothek für HTTP anfragen
-
-```bash
 pip install -r requirements.txt
+
+# oder via UV mit:
+uv sync
 ```
 
 ## Benutzung
